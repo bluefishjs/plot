@@ -9,6 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@bluefish-js/solid": "^0.0.18",
+    "@types/d3-scale": "^4.0.8",
+    "d3-scale": "^4.0.2",
     "solid-js": "^1.8.7"
   },
   "devDependencies": {
