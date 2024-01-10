@@ -45,18 +45,17 @@ export const Line = withBluefish((props: LineProps<any>) => {
     );
 
   return (
-    <Group x={0} y={200}>
-      <Path
-        d={d()}
-        // curved={props.curved} // curved unless otherwise specified
-        fill={"none"}
-        stroke={props.color ?? "black"}
-        strokeWidth={+(props.stroke ?? 1.5)}
-        strokeLinecap={"round"}
-        strokeLinejoin={"round"}
-        strokeMiterlimit={1}
-      />
-    </Group>
+    <Path
+      position="absolute"
+      d={d()}
+      // curved={props.curved} // curved unless otherwise specified
+      fill={"none"}
+      stroke={props.color ?? "black"}
+      strokeWidth={+(props.stroke ?? 1.5)}
+      strokeLinecap={"round"}
+      strokeLinejoin={"round"}
+      strokeMiterlimit={1}
+    />
   );
 });
 Line.displayName = "Line";

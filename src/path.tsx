@@ -8,14 +8,21 @@ export const maybeSub = (a: number | undefined, b: number | undefined) =>
   a !== undefined && b !== undefined ? a - b : undefined;
 
 // TODO: add support for points as well as d?
-export type PathProps = JSX.PathSVGAttributes<SVGPathElement> & { name: Id; d: string; x?: number; y?: number };
+export type PathProps = JSX.PathSVGAttributes<SVGPathElement> & {
+  name: Id;
+  d: string;
+  x?: number;
+  y?: number;
+  position?: "absolute" | "relative";
+};
 
 export const Path = withBluefish((props: PathProps) => {
   props = mergeProps(
     {
       "stroke-width": 3,
       stroke: "black",
-    },
+      position: "relative",
+    } as const,
     props
   );
 
@@ -36,8 +43,8 @@ export const Path = withBluefish((props: PathProps) => {
     return {
       transform: {
         translate: {
-          x: maybeSub(props.x, bounds.left),
-          y: maybeSub(props.y, bounds.top),
+          x: props.position === "absolute" ? 0 : maybeSub(props.x, bounds.left),
+          y: props.position === "absolute" ? 0 : maybeSub(props.y, bounds.top),
         },
       },
       bbox: { left: bounds.left, top: bounds.top, width: bounds.width, height: bounds.height },
@@ -48,7 +55,7 @@ export const Path = withBluefish((props: PathProps) => {
   };
 
   const paint = (paintProps: { bbox: BBox; transform: Transform; children: JSX.Element; customData?: any }) => {
-    const [_, rest] = splitProps(props, ["name", "x", "y", "d"]);
+    const [_, rest] = splitProps(props, ["name", "x", "y", "d", "position"]);
 
     return (
       <Show when={paintProps.customData} fallback={<g>{paintProps.children}</g>}>

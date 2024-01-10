@@ -1,4 +1,4 @@
-import { For, Match, ParentProps, Switch, createEffect, createMemo } from "solid-js";
+import { For, Match, ParentProps, Switch, createMemo } from "solid-js";
 import { JSX } from "solid-js/jsx-runtime";
 import { Rect, StackH, Group, withBluefish, Distribute, Align } from "@bluefish-js/solid";
 import { usePlotContext } from "./plot";
@@ -32,7 +32,7 @@ export const Bar = withBluefish(<T,>(props: BarProps<T>) => {
   const channelFns = createMemo(() => ({
     x: createChannelFunction(props.x, plotContext.scales.x()),
     x2: createChannelFunction(props.x2, plotContext.scales.x()),
-    height: createChannelFunction(props.height, plotContext.scales.y()),
+    height: createChannelFunction(props.height, (datum: any) => 500 - plotContext.scales.y()(datum)),
     stroke: createChannelFunction(props.stroke, plotContext.scales.color()),
     color: createChannelFunction(props.color, plotContext.scales.color(), "black"),
   }));
