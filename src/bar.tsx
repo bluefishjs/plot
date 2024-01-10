@@ -3,7 +3,6 @@ import { JSX } from "solid-js/jsx-runtime";
 import { Rect, StackH, Group, withBluefish, Distribute, Align } from "@bluefish-js/solid";
 import { usePlotContext } from "./plot";
 import { createChannelFunction } from "./channelFunction";
-import { data } from "./datasets/cars";
 
 export type BarProps<T> = ParentProps<
   Omit<JSX.RectSVGAttributes<SVGCircleElement>, "x" | "y" | "fill" | "width" | "height" | "label"> & {
@@ -31,11 +30,11 @@ export const Bar = withBluefish(<T,>(props: BarProps<T>) => {
   const data = () => props.data ?? plotContext.data;
 
   const channelFns = createMemo(() => ({
-    x: createChannelFunction(props.x),
-    x2: createChannelFunction(props.x2),
-    height: createChannelFunction(props.height),
-    stroke: createChannelFunction(props.stroke),
-    color: createChannelFunction(props.color, "black"),
+    x: createChannelFunction(props.x, plotContext.scales.x()),
+    x2: createChannelFunction(props.x2, plotContext.scales.x()),
+    height: createChannelFunction(props.height, plotContext.scales.y()),
+    stroke: createChannelFunction(props.stroke, plotContext.scales.color()),
+    color: createChannelFunction(props.color, plotContext.scales.color(), "black"),
   }));
 
   return (
@@ -48,13 +47,11 @@ export const Bar = withBluefish(<T,>(props: BarProps<T>) => {
                 return (
                   <Rect
                     shape-rendering="crispEdges"
-                    x={plotContext.scales.x()(channelFns().x(datum))}
-                    width={
-                      plotContext.scales.x()(channelFns().x2(datum)) - plotContext.scales.x()(channelFns().x(datum))
-                    }
-                    height={plotContext.scales.y()(channelFns().height(datum))}
-                    fill={plotContext.scales.color()(channelFns().color(datum))}
-                    stroke={plotContext.scales.color()(channelFns().stroke(datum))}
+                    x={channelFns().x(datum)}
+                    width={channelFns().x2(datum) - channelFns().x(datum)}
+                    height={channelFns().height(datum)}
+                    fill={channelFns().color(datum)}
+                    stroke={channelFns().stroke(datum)}
                   />
                 );
               }}
@@ -68,9 +65,9 @@ export const Bar = withBluefish(<T,>(props: BarProps<T>) => {
                 return (
                   <Rect
                     shape-rendering="crispEdges"
-                    height={plotContext.scales.y()(channelFns().height(datum))}
-                    fill={plotContext.scales.color()(channelFns().color(datum))}
-                    stroke={plotContext.scales.color()(channelFns().stroke(datum))}
+                    height={channelFns().height(datum)}
+                    fill={channelFns().color(datum)}
+                    stroke={channelFns().stroke(datum)}
                   />
                 );
               }}
@@ -84,9 +81,9 @@ export const Bar = withBluefish(<T,>(props: BarProps<T>) => {
                 return (
                   <Rect
                     shape-rendering="crispEdges"
-                    height={plotContext.scales.y()(channelFns().height(datum))}
-                    fill={plotContext.scales.color()(channelFns().color(datum))}
-                    stroke={plotContext.scales.color()(channelFns().stroke(datum))}
+                    height={channelFns().height(datum)}
+                    fill={channelFns().color(datum)}
+                    stroke={channelFns().stroke(datum)}
                   />
                 );
               }}

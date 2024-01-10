@@ -23,20 +23,11 @@ export type DotProps<T> = ParentProps<
 export const Dot = withBluefish(<T,>(props: DotProps<T>) => {
   const plotContext = usePlotContext();
 
-  // const resolvedX = () => plotContext.data.map((datum: any) => datum[props.x]);
-  // const resolvedY = () => plotContext.data.map((datum: any) => datum[props.y]);
-  // const resolvedColor = () =>
-  //   plotContext.data.map((datum: any) => datum[props.color]);
-
-  // const mappedX = () => resolvedX().map(plotContext.scales.x());
-  // const mappedY = () => resolvedY().map(plotContext.scales.y());
-  // const mappedColor = () => resolvedColor()?.map(plotContext.scales.color());
-
   const channelFns = createMemo(() => ({
-    x: createChannelFunction(props.x),
-    y: createChannelFunction(props.y),
-    stroke: createChannelFunction(props.stroke),
-    color: createChannelFunction(props.color, "black"),
+    x: createChannelFunction(props.x, plotContext.scales.x()),
+    y: createChannelFunction(props.y, plotContext.scales.y()),
+    stroke: createChannelFunction(props.stroke, plotContext.scales.color()),
+    color: createChannelFunction(props.color, plotContext.scales.color(), "black"),
   }));
 
   return (
@@ -44,12 +35,7 @@ export const Dot = withBluefish(<T,>(props: DotProps<T>) => {
       <For each={plotContext.data}>
         {(datum) => {
           return (
-            <Circle
-              cx={plotContext.scales.x()(channelFns().x(datum))}
-              cy={plotContext.scales.y()(channelFns().y(datum))}
-              fill={plotContext.scales.color()(channelFns().color(datum))}
-              r={5}
-            />
+            <Circle cx={channelFns().x(datum)} cy={channelFns().y(datum)} fill={channelFns().color(datum)} r={5} />
           );
         }}
       </For>
