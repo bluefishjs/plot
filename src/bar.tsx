@@ -2,16 +2,16 @@ import { For, Match, ParentProps, Switch, createEffect, createMemo } from "solid
 import { JSX } from "solid-js/jsx-runtime";
 import { Rect, StackH, Group, withBluefish, Distribute, Align } from "@bluefish-js/solid";
 import { usePlotContext } from "./plot";
-import { createChannelFunction } from "./channelFunction";
+import { Encoding, createChannelFunction } from "./channelFunction";
 
 export type BarProps<T> = ParentProps<
-  Omit<JSX.RectSVGAttributes<SVGCircleElement>, "x" | "y" | "fill" | "width" | "height" | "label"> & {
-    x: keyof T;
-    x2?: keyof T;
-    height?: keyof T;
-    y?: keyof T;
-    color?: keyof T;
-    stroke?: keyof T;
+  Omit<JSX.RectSVGAttributes<SVGRectElement>, "x" | "y" | "fill" | "width" | "height" | "label"> & {
+    x: Encoding<T>;
+    x2?: Encoding<T>;
+    height?: Encoding<T>;
+    y?: Encoding<T>;
+    color?: Encoding<T>;
+    stroke?: Encoding<T>;
     label?:
       | keyof T
       | {

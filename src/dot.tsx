@@ -2,14 +2,14 @@ import { For, ParentProps, createMemo } from "solid-js";
 import { JSX } from "solid-js/jsx-runtime";
 import { Circle, Group, withBluefish } from "@bluefish-js/solid";
 import { usePlotContext } from "./plot";
-import { createChannelFunction } from "./channelFunction";
+import { Encoding, createChannelFunction } from "./channelFunction";
 
 export type DotProps<T> = ParentProps<
   Omit<JSX.CircleSVGAttributes<SVGCircleElement>, "cx" | "cy" | "fill" | "width" | "height" | "label"> & {
-    x: keyof T;
-    y: keyof T;
-    color?: keyof T;
-    stroke?: keyof T;
+    x: Encoding<T>;
+    y: Encoding<T>;
+    color?: Encoding<T>;
+    stroke?: Encoding<T>;
     label?:
       | keyof T
       | {
