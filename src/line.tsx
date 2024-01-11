@@ -49,7 +49,6 @@ export const Line = withBluefish((props: LineProps<any>) => {
       position="absolute"
       d={d()}
       // curved={props.curved} // curved unless otherwise specified
-      fill={"none"}
       stroke={props.color ?? "black"}
       strokeWidth={+(props.stroke ?? 1.5)}
       strokeLinecap={"round"}
