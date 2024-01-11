@@ -22,6 +22,7 @@ export const Path = withBluefish((props: PathProps) => {
       "stroke-width": 3,
       stroke: "black",
       position: "relative",
+      fill: "none",
     } as const,
     props
   );
@@ -60,7 +61,7 @@ export const Path = withBluefish((props: PathProps) => {
     return (
       <Show when={paintProps.customData} fallback={<g>{paintProps.children}</g>}>
         <g transform={`translate(${paintProps.transform.translate.x ?? 0}, ${paintProps.transform.translate.y ?? 0})`}>
-          <path {...rest} d={paintProps.customData.path?.pathData ?? ""} fill="none" />
+          <path {...rest} d={paintProps.customData.path?.pathData ?? ""} />
           {paintProps.children}
         </g>
       </Show>
