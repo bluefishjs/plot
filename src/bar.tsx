@@ -37,6 +37,7 @@ export const Bar = withBluefish(<T,>(props: BarProps<T>) => {
     color: createChannelFunction(props.color, plotContext.scales.color(), "black"),
   }));
 
+  // TODO: I can simplify this code by splitting out Align and Distribute from stack
   return (
     <Group x={0} y={0}>
       <Switch>
