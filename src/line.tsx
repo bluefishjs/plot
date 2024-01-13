@@ -45,7 +45,8 @@ export const Line = withBluefish((props: LineProps<any>) => {
         (datum: any) =>
           [
             channelFns().x(datum) + channelFns().dx(datum),
-            (props.height !== undefined ? channelFns().height(datum) : channelFns().y(datum)) + channelFns().dy(datum),
+            (channelFns().height(datum) !== undefined ? channelFns().height(datum) : channelFns().y(datum)) +
+              channelFns().dy(datum),
           ] as [number, number]
       )
       .filter((d: any) => d[0] !== undefined && d[1] !== undefined && !isNaN(d[0]) && !isNaN(d[1]))

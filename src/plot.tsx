@@ -18,7 +18,7 @@ export type PlotContextValue = {
   scales: { [key in string /* Scale */]: any };
 };
 
-const PlotContext = createContext<PlotContextValue>();
+export const PlotContext = createContext<PlotContextValue>();
 
 export const usePlotContext = () => {
   const context = useContext(PlotContext);
