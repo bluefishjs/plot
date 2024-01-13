@@ -29,14 +29,13 @@ export const Bar = withBluefish(<T,>(props: BarProps<T>) => {
 
   const data = () => props.data ?? plotContext.data;
 
-  createEffect(() => {
-    console.log(data());
-  });
-
   const channelFns = createMemo(() => ({
     x: createChannelFunction(props.x, plotContext.scales.x()),
     x2: createChannelFunction(props.x2, plotContext.scales.x()),
-    height: createChannelFunction(props.height, (datum: any) => 500 - plotContext.scales.y()(datum)),
+    height: createChannelFunction(
+      props.height,
+      (datum: any) => plotContext.dims.height - plotContext.scales.y()(datum)
+    ),
     stroke: createChannelFunction(props.stroke, plotContext.scales.color()),
     color: createChannelFunction(props.color, plotContext.scales.color(), "black"),
   }));
@@ -64,7 +63,7 @@ export const Bar = withBluefish(<T,>(props: BarProps<T>) => {
           </Align>
         </Match>
         <Match when={props.alignment === "none"}>
-          <Distribute direction="horizontal" spacing={props.spacing ?? 5} total={1000}>
+          <Distribute direction="horizontal" spacing={props.spacing ?? 5} total={plotContext.dims.width}>
             <For each={data()}>
               {(datum) => {
                 return (
@@ -80,7 +79,7 @@ export const Bar = withBluefish(<T,>(props: BarProps<T>) => {
           </Distribute>
         </Match>
         <Match when={true}>
-          <StackH spacing={props.spacing ?? 5} total={1000} alignment={props.alignment ?? "bottom"}>
+          <StackH spacing={props.spacing ?? 5} total={plotContext.dims.width} alignment={props.alignment ?? "bottom"}>
             <For each={data()}>
               {(datum) => {
                 return (

@@ -87,15 +87,11 @@ export const GroupBy = withBluefish(<T,>(props: GroupByProps<T>) => {
     return groupedData;
   });
 
-  createEffect(() => {
-    console.log(groupedData());
-  });
-
   return (
-    <StackH>
+    <StackH alignment="bottom" total={plotContext.dims.width}>
       <For each={groupedData()}>
         {(col) => (
-          <StackV>
+          <StackV total={plotContext.dims.height}>
             <For each={col}>
               {(datum) => (
                 <PlotContext.Provider
@@ -104,6 +100,10 @@ export const GroupBy = withBluefish(<T,>(props: GroupByProps<T>) => {
                       return datum;
                     },
                     scales: plotContext.scales,
+                    dims: {
+                      width: plotContext.dims.width / groupedData().length - 10,
+                      height: plotContext.dims.height / col.length,
+                    },
                   }}
                 >
                   {props.children()}

@@ -5,8 +5,8 @@ export type Scale = any;
 
 export type PlotProps = ParentProps<{
   name: Id;
-  width?: number;
-  height?: number;
+  width: number;
+  height: number;
   x?: Scale;
   y?: Scale;
   color?: Scale;
@@ -16,6 +16,7 @@ export type PlotProps = ParentProps<{
 export type PlotContextValue = {
   data?: any;
   scales: { [key in string /* Scale */]: any };
+  dims: { width: number; height: number };
 };
 
 export const PlotContext = createContext<PlotContextValue>();
@@ -46,6 +47,14 @@ export const Plot = withBluefish((props: PlotProps) => {
           },
           get color() {
             return props.color;
+          },
+        },
+        dims: {
+          get width() {
+            return props.width;
+          },
+          get height() {
+            return props.height;
           },
         },
       }}
