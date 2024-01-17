@@ -1,5 +1,7 @@
 import { ParentProps, createContext, splitProps, useContext } from "solid-js";
 import { Id, withBluefish, Group } from "@bluefish-js/solid";
+import { Domain } from "./domain";
+import { SetStoreFunction, createStore } from "solid-js/store";
 
 export type Scale = any;
 
@@ -13,8 +15,12 @@ export type PlotProps = ParentProps<{
   data?: any;
 }>;
 
+export type DomainMap = { [key in string]: { [key in string]: Domain } };
+
 export type PlotContextValue = {
   data?: any;
+  domains: DomainMap;
+  setDomains: SetStoreFunction<DomainMap>;
   scales: { [key in string /* Scale */]: any };
   dims: { width: number; height: number };
 };
@@ -32,9 +38,13 @@ export const usePlotContext = () => {
 };
 
 export const Plot = withBluefish((props: PlotProps) => {
+  const [domains, setDomains] = createStore<DomainMap>({});
+
   return (
     <PlotContext.Provider
       value={{
+        domains,
+        setDomains,
         get data() {
           return props.data;
         },

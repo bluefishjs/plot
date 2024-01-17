@@ -22,3 +22,18 @@ export const createChannelFunction = <T>(input: Encoding<T> | undefined, scale: 
     return (data: any) => scale(input(data));
   }
 };
+
+// TODO: maybe I should instead first check whether the encoding is a data encoding or not rather
+// than returning undefined
+export const createDataFunction = <T>(input: Encoding<T> | undefined): Fn<T> => {
+  // no input
+  if (input === undefined) {
+    return () => undefined;
+    // input might be a field
+  } else if (typeof input === "string" || typeof input === "number" || typeof input === "symbol") {
+    return (data: any) => (input in data ? data[input] : undefined);
+    // input is a function
+  } else {
+    return (data: any) => input(data);
+  }
+};

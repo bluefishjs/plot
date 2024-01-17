@@ -96,6 +96,8 @@ export const GroupBy = withBluefish(<T,>(props: GroupByProps<T>) => {
               {(datum) => (
                 <PlotContext.Provider
                   value={{
+                    domains: plotContext.domains,
+                    setDomains: plotContext.setDomains,
                     get data() {
                       return datum;
                     },
