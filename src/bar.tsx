@@ -95,7 +95,7 @@ export const Bar = withBluefish(<T,>(props: BarProps<T>) => {
 
   const yDomain = createMemo(() => {
     if (props.y === undefined) {
-      return computeDomain(data(), (datum: any) => dataFns().height(datum));
+      return mergeContinuousDomains([[0, 0], computeDomain(data(), (datum: any) => dataFns().height(datum))]);
     }
 
     switch (discreteOrContinuous(dataFns().y(data()[0]))) {
@@ -126,10 +126,9 @@ export const Bar = withBluefish(<T,>(props: BarProps<T>) => {
     x: createChannelFunction(props.x, plotContext.scales.x()),
     x2: createChannelFunction(props.x2, plotContext.scales.x()),
     y: createChannelFunction(props.y, plotContext.scales.y()),
-    height: createChannelFunction(
-      props.height,
-      (datum: any) => plotContext.dims.height - plotContext.scales.y()(datum)
-    ),
+    height: createChannelFunction(props.height, (datum: any) => {
+      return plotContext.dims.height - plotContext.scales.y()(datum);
+    }),
     stroke: createChannelFunction(props.stroke, plotContext.scales.color()),
     color: createChannelFunction(props.color, plotContext.scales.color(), "black"),
   }));

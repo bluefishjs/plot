@@ -12,8 +12,9 @@ export const discreteOrContinuous = (datum: any): "discrete" | "continuous" => {
 };
 
 export const mergeContinuousDomains = (domains: number[][]) => {
-  const merged = domains.reduce((acc, domain) => [...acc, ...domain], []);
-  return [Math.min(...merged), Math.max(...merged)];
+  const min = Math.min(...domains.map((d) => d[0]));
+  const max = Math.max(...domains.map((d) => d[1]));
+  return [min, max];
 };
 
 export const computeDomain = (data: any[], dataFn: (d: any) => any) => {
