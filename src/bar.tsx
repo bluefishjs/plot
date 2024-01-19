@@ -126,9 +126,7 @@ export const Bar = withBluefish(<T,>(props: BarProps<T>) => {
     x: createChannelFunction(props.x, plotContext.scales.x()),
     x2: createChannelFunction(props.x2, plotContext.scales.x()),
     y: createChannelFunction(props.y, plotContext.scales.y()),
-    height: createChannelFunction(props.height, (datum: any) => {
-      return plotContext.dims.height - plotContext.scales.y()(datum);
-    }),
+    height: createChannelFunction(props.height, plotContext.scales.y()),
     stroke: createChannelFunction(props.stroke, plotContext.scales.color()),
     color: createChannelFunction(props.color, plotContext.scales.color(), "black"),
   }));

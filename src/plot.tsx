@@ -49,7 +49,7 @@ export const Plot = withBluefish((props: PlotProps) => {
       }
     }
 
-    return props.y ?? (() => createScale("linear", domain, [props.height, 0]));
+    return props.y ?? (() => createScale("linear", domain, [0, props.height]));
   });
 
   return (
