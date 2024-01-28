@@ -97,24 +97,26 @@ export const GroupBy = withBluefish(<T,>(props: GroupByProps<T>) => {
         {(col) => (
           <StackV spacing={props.ySpacing ?? 0} /* total={plotContext.dims.height} */>
             <For each={col}>
-              {(datum) => (
-                <PlotContext.Provider
-                  value={{
-                    domains: plotContext.domains,
-                    setDomains: plotContext.setDomains,
-                    get data() {
-                      return datum;
-                    },
-                    scales: plotContext.scales,
-                    dims: {
-                      width: plotContext.dims.width / groupedData().length - 10,
-                      height: plotContext.dims.height / col.length,
-                    },
-                  }}
-                >
-                  {props.children()}
-                </PlotContext.Provider>
-              )}
+              {(datum) => {
+                return (
+                  <PlotContext.Provider
+                    value={{
+                      domains: plotContext.domains,
+                      setDomains: plotContext.setDomains,
+                      get data() {
+                        return datum;
+                      },
+                      scales: plotContext.scales,
+                      dims: {
+                        width: plotContext.dims.width / groupedData().length - 10,
+                        height: plotContext.dims.height / col.length,
+                      },
+                    }}
+                  >
+                    {props.children()}
+                  </PlotContext.Provider>
+                );
+              }}
             </For>
           </StackV>
         )}

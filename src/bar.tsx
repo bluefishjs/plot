@@ -131,21 +131,6 @@ export const Bar = withBluefish(<T,>(props: BarProps<T>) => {
     color: createChannelFunction(props.color, plotContext.scales.color(), "black"),
   }));
 
-  // const yGrouped = createMemo(() => {
-  //   if (props.y === undefined) return [];
-  //   // group data by y
-  //   const groupedData: T[][] = [];
-  //   const y = props.y;
-  //   const yValues = new Set(data().map((d) => d[y]));
-
-  //   for (const yValue of yValues) {
-  //     groupedData.push(data().filter((d) => d[y] === yValue));
-  //   }
-  //   console.log("data", data());
-  //   console.log("groupedData", groupedData);
-  //   return groupedData;
-  // });
-
   const groupedData = createMemo(() => {
     const groupedData: T[][] = [];
     const x = props.x;
@@ -176,8 +161,6 @@ export const Bar = withBluefish(<T,>(props: BarProps<T>) => {
     } else {
       groupedData.push([data()]);
     }
-
-    console.log("groupedData", groupedData);
 
     return groupedData;
   });
@@ -226,13 +209,11 @@ export const Bar = withBluefish(<T,>(props: BarProps<T>) => {
               {(row) =>
                 // make a column for each unique xValue
                 {
-                  console.log("row", row);
                   return (
                     <StackV spacing={0} alignment="centerX">
                       <For each={row}>
                         {/* this column contains the yValues associated with the xValue */}
                         {(datum) => {
-                          console.log("datum", datum, row);
                           return (
                             <Rect
                               width={80}
