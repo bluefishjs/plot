@@ -1,6 +1,6 @@
 import { For, Match, ParentProps, Switch, createEffect, createMemo, createUniqueId } from "solid-js";
 import { JSX } from "solid-js/jsx-runtime";
-import { Rect, StackH, Group, withBluefish, Distribute, Align } from "@bluefish-js/solid";
+import { Rect, StackH, Group, withBluefish, Distribute, Align, StackV } from "@bluefish-js/solid";
 import { usePlotContext } from "./plot";
 import { Encoding, createChannelFunction, createDataFunction } from "./channelFunction";
 import { computeDomain, discreteOrContinuous, mergeContinuousDomains } from "./domain";
@@ -131,6 +131,57 @@ export const Bar = withBluefish(<T,>(props: BarProps<T>) => {
     color: createChannelFunction(props.color, plotContext.scales.color(), "black"),
   }));
 
+  // const yGrouped = createMemo(() => {
+  //   if (props.y === undefined) return [];
+  //   // group data by y
+  //   const groupedData: T[][] = [];
+  //   const y = props.y;
+  //   const yValues = new Set(data().map((d) => d[y]));
+
+  //   for (const yValue of yValues) {
+  //     groupedData.push(data().filter((d) => d[y] === yValue));
+  //   }
+  //   console.log("data", data());
+  //   console.log("groupedData", groupedData);
+  //   return groupedData;
+  // });
+
+  const groupedData = createMemo(() => {
+    const groupedData: T[][] = [];
+    const x = props.x;
+    const y = props.y;
+
+    if (x !== undefined && y !== undefined) {
+      const xValues = new Set(data().map((d) => d[x]));
+      const yValues = new Set(data().map((d) => d[y]));
+
+      for (const xValue of xValues) {
+        const row: T[] = [];
+        for (const yValue of yValues) {
+          row.push(data().filter((d) => d[x] === xValue && d[y] === yValue)[0]);
+        }
+        groupedData.push(row);
+      }
+    } else if (x !== undefined) {
+      const xValues = new Set(data().map((d) => d[x]));
+      for (const xValue of xValues) {
+        groupedData.push(data().filter((d) => d[x] === xValue));
+      }
+    } else if (y !== undefined) {
+      const yValues = new Set(data().map((d) => d[y]));
+      groupedData.push([]);
+      for (const yValue of yValues) {
+        groupedData[0].push(data().filter((d) => d[y] === yValue)[0]);
+      }
+    } else {
+      groupedData.push([data()]);
+    }
+
+    console.log("groupedData", groupedData);
+
+    return groupedData;
+  });
+
   // TODO: I can simplify this code by splitting out Align and Distribute from stack
   return (
     <Group x={0} y={0}>
@@ -171,6 +222,64 @@ export const Bar = withBluefish(<T,>(props: BarProps<T>) => {
         </Match>
         <Match when={true}>
           <StackH spacing={props.spacing ?? 5} total={plotContext.dims.width} alignment={props.alignment ?? "bottom"}>
+            <For each={groupedData()}>
+              {(row) =>
+                // make a column for each unique xValue
+                {
+                  console.log("row", row);
+                  return (
+                    <StackV spacing={0} alignment="centerX">
+                      <For each={row}>
+                        {/* this column contains the yValues associated with the xValue */}
+                        {(datum) => {
+                          console.log("datum", datum, row);
+                          return (
+                            <Rect
+                              width={80}
+                              shape-rendering="crispEdges"
+                              height={channelFns().height(datum)}
+                              fill={channelFns().color(datum)}
+                              stroke={channelFns().stroke(datum)}
+                            />
+                          );
+                        }}
+                      </For>
+                    </StackV>
+                  );
+                }
+              }
+            </For>
+          </StackH>
+          {/* <StackH alignment="bottom" total={plotContext.dims.width}>
+            <For each={groupedData()}>
+              {(col) => (
+                <StackH alignment="bottom" total={plotContext.dims.width}>
+                  <For each={col}>
+                    {(subcol) => (
+                      <StackV spacing={0}>
+                        <For each={subcol}>
+                          {(datum) => {
+                            return (
+                              <Rect
+                                width={80}
+                                shape-rendering="crispEdges"
+                                height={channelFns().height(datum)}
+                                fill={channelFns().color(datum)}
+                                stroke={channelFns().stroke(datum)}
+                              />
+                            );
+                          }}
+                        </For>
+                      </StackV>
+                    )}
+                  </For>
+                </StackH>
+              )}
+            </For>
+          </StackH> */}
+        </Match>
+        {/* <Match when={true}>
+          <StackH spacing={props.spacing ?? 5} total={plotContext.dims.width} alignment={props.alignment ?? "bottom"}>
             <For each={data()}>
               {(datum) => {
                 return (
@@ -184,7 +293,7 @@ export const Bar = withBluefish(<T,>(props: BarProps<T>) => {
               }}
             </For>
           </StackH>
-        </Match>
+        </Match> */}
       </Switch>
     </Group>
   );

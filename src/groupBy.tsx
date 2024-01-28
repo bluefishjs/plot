@@ -4,6 +4,7 @@ import { For, JSX, createEffect, createMemo } from "solid-js";
 export type GroupByProps<T> = {
   x?: keyof T;
   y?: keyof T;
+  ySpacing?: number;
   data?: T[];
   children: () => JSX.Element;
 };
@@ -77,12 +78,15 @@ export const GroupBy = withBluefish(<T,>(props: GroupByProps<T>) => {
       }
     } else if (y !== undefined) {
       const yValues = new Set(data().map((d) => d[y]));
+      groupedData.push([]);
       for (const yValue of yValues) {
-        groupedData.push([data().filter((d) => d[y] === yValue)]);
+        groupedData[0].push(data().filter((d) => d[y] === yValue));
       }
     } else {
       groupedData.push([data()]);
     }
+
+    // console.log(groupedData);
 
     return groupedData;
   });
@@ -91,7 +95,7 @@ export const GroupBy = withBluefish(<T,>(props: GroupByProps<T>) => {
     <StackH alignment="bottom" total={plotContext.dims.width}>
       <For each={groupedData()}>
         {(col) => (
-          <StackV total={plotContext.dims.height}>
+          <StackV spacing={props.ySpacing ?? 0} /* total={plotContext.dims.height} */>
             <For each={col}>
               {(datum) => (
                 <PlotContext.Provider
