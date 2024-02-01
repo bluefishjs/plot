@@ -99,7 +99,6 @@ export const GroupBy = withBluefish(
             <StackV spacing={props.ySpacing ?? 10} /* total={plotContext.dims.height} */>
               <For each={col}>
                 {(datum) => {
-                  console.log("datum", datum);
                   return (
                     // <PlotContext.Provider
                     //   value={{
@@ -120,7 +119,7 @@ export const GroupBy = withBluefish(
                     <Plot
                       data={datum}
                       width={plotContext.dims.width / groupedData().length - 10}
-                      height={plotContext.dims.height / col.length}
+                      height={(plotContext.dims.height - (props.ySpacing ?? 10) * (col.length - 1)) / col.length}
                       x={plotContext.scales.x}
                       // y={plotContext.scales.y}
                       color={plotContext.scales.color}

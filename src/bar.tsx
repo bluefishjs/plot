@@ -102,44 +102,6 @@ export const Bar = withBluefish(
       plotContext.setDomains(id, "x", xDomain());
     });
 
-    const yDomain = createMemo(() => {
-      if (props.y === undefined) {
-        return mergeContinuousDomains([[0, 0], computeDomain(data(), (datum: any) => dataFns().height(datum))]);
-      }
-
-      switch (discreteOrContinuous(dataFns().y(data()[0]))) {
-        case "discrete":
-          // if y is discrete and height is defined, then we have a stacked bar chart so take sum over heights
-          return [
-            0,
-            data()
-              .map((datum: any) => dataFns().height(datum))
-              .reduce((a: number, b: number) => a + b, 0),
-          ];
-        case "continuous":
-          // if y is continuous and height is defined, then we have independently placed bars so take
-          // max over y + height
-          return computeDomain(data(), (datum: any) => dataFns().y(datum) + dataFns().height(datum));
-      }
-      // return mergeContinuousDomains([
-      //   [0, 0], // always include 0 in the domain. TODO: this should only happen if height is defined I think... and if y is continuous or undefined
-      //   computeDomain(data(), dataFns().y),
-      // ]);
-    });
-
-    createRenderEffect(() => {
-      plotContext.setDomains(id, "y", yDomain());
-    });
-
-    const channelFns = createMemo(() => ({
-      x: createChannelFunction(props.x, plotContext.scales.x()),
-      x2: createChannelFunction(props.x2, plotContext.scales.x()),
-      y: createChannelFunction(props.y, plotContext.scales.y()),
-      height: createChannelFunction(props.height, plotContext.scales.y()),
-      stroke: createChannelFunction(props.stroke, plotContext.scales.color()),
-      color: createChannelFunction(props.color, plotContext.scales.color(), "black"),
-    }));
-
     const groupedData = createMemo(() => {
       const groupedData: T[][] = [];
       const x = props.x;
@@ -173,6 +135,46 @@ export const Bar = withBluefish(
 
       return groupedData;
     });
+
+    const yDomain = createMemo(() => {
+      if (props.y === undefined) {
+        return mergeContinuousDomains([[0, 0], computeDomain(data(), (datum: any) => dataFns().height(datum))]);
+      }
+
+      switch (discreteOrContinuous(dataFns().y(data()[0]))) {
+        case "discrete":
+          // if y is discrete and height is defined, then we have a stacked bar chart so take sum over heights
+          return [
+            0,
+            Math.max(
+              ...groupedData().map((row) =>
+                row.map((datum: any) => dataFns().height(datum)).reduce((a: number, b: number) => a + b, 0)
+              )
+            ),
+          ];
+        case "continuous":
+          // if y is continuous and height is defined, then we have independently placed bars so take
+          // max over y + height
+          return computeDomain(data(), (datum: any) => dataFns().y(datum) + dataFns().height(datum));
+      }
+      // return mergeContinuousDomains([
+      //   [0, 0], // always include 0 in the domain. TODO: this should only happen if height is defined I think... and if y is continuous or undefined
+      //   computeDomain(data(), dataFns().y),
+      // ]);
+    });
+
+    createRenderEffect(() => {
+      plotContext.setDomains(id, "y", yDomain());
+    });
+
+    const channelFns = createMemo(() => ({
+      x: createChannelFunction(props.x, plotContext.scales.x()),
+      x2: createChannelFunction(props.x2, plotContext.scales.x()),
+      y: createChannelFunction(props.y, plotContext.scales.y()),
+      height: createChannelFunction(props.height, plotContext.scales.y()),
+      stroke: createChannelFunction(props.stroke, plotContext.scales.color()),
+      color: createChannelFunction(props.color, plotContext.scales.color(), "black"),
+    }));
 
     // TODO: I can simplify this code by splitting out Align and Distribute from stack
     return (

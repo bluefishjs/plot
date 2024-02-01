@@ -1,5 +1,5 @@
 import { For, ParentProps, createContext, createMemo, splitProps, useContext } from "solid-js";
-import { Id, withBluefish, Group, Text } from "@bluefish-js/solid";
+import { Id, withBluefish, Group, Text, Rect, createName, Distribute, Ref } from "@bluefish-js/solid";
 import { Domain, mergeContinuousDomains } from "./domain";
 import { SetStoreFunction, createStore } from "solid-js/store";
 import { createScale } from "./scale";
@@ -58,6 +58,9 @@ export const Plot = withBluefish(
       return d3Ticks(yScale()().domain()[0], yScale()().domain()[1], 5);
     });
 
+    const plotElements = createName("plotElements");
+    const yAxis = createName("yAxis");
+
     return (
       <PlotContext.Provider
         value={{
@@ -89,14 +92,21 @@ export const Plot = withBluefish(
         }}
       >
         <Group>
-          {props.children}
-          {/* <For each={ticks()}>
+          <Group name={plotElements}>
+            {props.children}
+            {/* <For each={ticks()}>
           {(tick) => (
             <Group y={yScale()(tick)}>
               <Text>{tick}</Text>
             </Group>
           )}
         </For> */}
+          </Group>
+          <Rect name={yAxis} width={1} height={yScale()().range()[1] - yScale()().range()[0]} fill="black" />
+          <Distribute direction="horizontal" spacing={5}>
+            <Ref select={yAxis} />
+            <Ref select={plotElements} />
+          </Distribute>
         </Group>
       </PlotContext.Provider>
     );
