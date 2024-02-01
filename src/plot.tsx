@@ -1,8 +1,9 @@
-import { ParentProps, createContext, createMemo, splitProps, useContext } from "solid-js";
-import { Id, withBluefish, Group } from "@bluefish-js/solid";
+import { For, ParentProps, createContext, createMemo, splitProps, useContext } from "solid-js";
+import { Id, withBluefish, Group, Text } from "@bluefish-js/solid";
 import { Domain, mergeContinuousDomains } from "./domain";
 import { SetStoreFunction, createStore } from "solid-js/store";
 import { createScale } from "./scale";
+import { ticks as d3Ticks } from "d3-array";
 
 export type Scale = any;
 
@@ -38,51 +39,67 @@ export const usePlotContext = () => {
   return context;
 };
 
-export const Plot = withBluefish((props: PlotProps) => {
-  const [domains, setDomains] = createStore<DomainMap>({});
+export const Plot = withBluefish(
+  (props: PlotProps) => {
+    const [domains, setDomains] = createStore<DomainMap>({});
 
-  const yScale = createMemo(() => {
-    let domain = [Infinity, -Infinity];
-    for (const key in domains) {
-      if (domains[key].y !== undefined) {
-        domain = mergeContinuousDomains([domain, domains[key].y]);
+    const yScale = createMemo(() => {
+      let domain = [Infinity, -Infinity];
+      for (const key in domains) {
+        if (domains[key].y !== undefined) {
+          domain = mergeContinuousDomains([domain, domains[key].y]);
+        }
       }
-    }
 
-    return props.y ?? (() => createScale("linear", domain, [0, props.height]));
-  });
+      return props.y ?? (() => createScale("linear", domain, [0, props.height]));
+    });
 
-  return (
-    <PlotContext.Provider
-      value={{
-        domains,
-        setDomains,
-        get data() {
-          return props.data;
-        },
-        scales: {
-          get x() {
-            return props.x;
+    const ticks = createMemo(() => {
+      return d3Ticks(yScale()().domain()[0], yScale()().domain()[1], 5);
+    });
+
+    return (
+      <PlotContext.Provider
+        value={{
+          domains,
+          setDomains,
+          get data() {
+            return props.data;
           },
-          get y() {
-            // return props.y;
-            return yScale();
+          scales: {
+            get x() {
+              return props.x;
+            },
+            get y() {
+              // return props.y;
+              return yScale();
+            },
+            get color() {
+              return props.color;
+            },
           },
-          get color() {
-            return props.color;
+          dims: {
+            get width() {
+              return props.width;
+            },
+            get height() {
+              return props.height;
+            },
           },
-        },
-        dims: {
-          get width() {
-            return props.width;
-          },
-          get height() {
-            return props.height;
-          },
-        },
-      }}
-    >
-      <Group>{props.children}</Group>
-    </PlotContext.Provider>
-  );
-});
+        }}
+      >
+        <Group>
+          {props.children}
+          {/* <For each={ticks()}>
+          {(tick) => (
+            <Group y={yScale()(tick)}>
+              <Text>{tick}</Text>
+            </Group>
+          )}
+        </For> */}
+        </Group>
+      </PlotContext.Provider>
+    );
+  },
+  { displayName: "Plot" }
+);

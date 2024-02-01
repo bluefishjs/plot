@@ -95,7 +95,7 @@ export const GroupBy = withBluefish(<T,>(props: GroupByProps<T>) => {
     <StackH alignment="bottom" total={plotContext.dims.width}>
       <For each={groupedData()}>
         {(col) => (
-          <StackV spacing={props.ySpacing ?? 0} /* total={plotContext.dims.height} */>
+          <StackV spacing={props.ySpacing ?? 10} /* total={plotContext.dims.height} */>
             <For each={col}>
               {(datum) => {
                 return (

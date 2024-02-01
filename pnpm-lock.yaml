@@ -6,14 +6,20 @@ settings:
 
 dependencies:
   '@bluefish-js/solid':
-    specifier: ^0.0.18
-    version: 0.0.18(solid-js@1.8.9)
+    specifier: ^0.0.23
+    version: 0.0.23(solid-js@1.8.9)
+  '@types/d3-array':
+    specifier: ^3.2.1
+    version: 3.2.1
   '@types/d3-scale':
     specifier: ^4.0.8
     version: 4.0.8
   '@types/d3-shape':
     specifier: ^3.1.6
     version: 3.1.6
+  d3-array:
+    specifier: ^3.2.4
+    version: 3.2.4
   d3-scale:
     specifier: ^4.0.2
     version: 4.0.2
@@ -368,8 +374,8 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
-  /@bluefish-js/solid@0.0.18(solid-js@1.8.9):
-    resolution: {integrity: sha512-2vYhHyfwmCnAQIIEo6xBhNbbXnvZPrvYmCSqhJZzFPPBLa8gyRGwmzrUgx29lk33nu7FNiEAFlz0h9gSlhC7fQ==}
+  /@bluefish-js/solid@0.0.23(solid-js@1.8.9):
+    resolution: {integrity: sha512-YjxzTXP/+2tXsFAvQ2nGhY+nhto8mnV732BkowRmR9BXfRRn9YUxTSsjcZodVgQWtyuZIZt+b0FdPMDoQMZgkQ==}
     peerDependencies:
       solid-js: ^1.7.7
     dependencies:
@@ -383,6 +389,7 @@ packages:
       reduce-css-calc: 2.1.8
       smiles-drawer: 2.1.7
       solid-js: 1.8.9
+      solid-toast: 0.5.0(solid-js@1.8.9)
     dev: false
 
   /@esbuild/aix-ppc64@0.19.11:
@@ -754,6 +761,10 @@ packages:
     dependencies:
       '@babel/types': 7.23.6
     dev: true
+
+  /@types/d3-array@3.2.1:
+    resolution: {integrity: sha512-Y2Jn2idRrLzUfAKV2LyRImR+y4oa2AntrgID95SHJxuMUrkNXmanDSed71sRNZysveJVt1hLLemQZIady0FpEg==}
+    dev: false
 
   /@types/d3-path@3.0.2:
     resolution: {integrity: sha512-WAIEVlOCdd/NKRYTsqCpOMHQHemKBEINf8YXMYOtXH0GA7SY0dqMB78P3Uhgfy+4X+/Mlw2wDtlETkN6kQUCMA==}
@@ -1173,6 +1184,14 @@ packages:
       '@babel/types': 7.23.6
       solid-js: 1.8.9
     dev: true
+
+  /solid-toast@0.5.0(solid-js@1.8.9):
+    resolution: {integrity: sha512-t770JakjyS2P9b8Qa1zMLOD51KYKWXbTAyJePVUoYex5c5FH5S/HtUBUbZAWFcqRCKmAE8KhyIiCvDZA8bOnxQ==}
+    peerDependencies:
+      solid-js: ^1.5.4
+    dependencies:
+      solid-js: 1.8.9
+    dev: false
 
   /source-map-js@1.0.2:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}
